@@ -1,28 +1,29 @@
 {
-  "name": "obsidian-static-website",
-  "version": "0.0.1",
-  "description": "Generate a static website from an Obsidian Vault",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/destinmoulton/obsidian-static-website.git"
-  },
-  "keywords": [
-    "obsidian",
-    "static",
-    "metalsmith",
-    "js"
-  ],
-  "author": "Destin Moulton",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/destinmoulton/obsidian-static-website/issues"
-  },
-  "homepage": "https://github.com/destinmoulton/obsidian-static-website#readme",
-  "dependencies": {
-    "dotenv": "^16.0.0"
-  }
+    "name": "obsidian-static-website",
+    "version": "0.0.1",
+    "description": "Generate a static website from an Obsidian Vault",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/destinmoulton/obsidian-static-website.git"
+    },
+    "keywords": [
+        "obsidian",
+        "static",
+        "metalsmith",
+        "js"
+    ],
+    "author": "Destin Moulton",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/destinmoulton/obsidian-static-website/issues"
+    },
+    "homepage": "https://github.com/destinmoulton/obsidian-static-website#readme",
+    "dependencies": {
+        "dotenv": "^16.0.0",
+        "glob": "^7.2.0"
+    }
 }
