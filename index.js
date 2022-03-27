@@ -1,11 +1,16 @@
 require("dotenv").config();
-const glob = require("glob");
+const dirTree = require("directory-tree");
+const express = require("express");
+const app = express();
 
-(async () => {
-    const longpath = process.env.VAULT_PATH + "/**/*.md";
-    glob(longpath, {}, function (err, files) {
-        if (err) throw err;
+const options = {
+    extensions: /\.md/,
+    attributes: ["type"],
+};
+const tree = dirTree(process.env.VAULT_PATH, options);
 
-        console.log(files);
-    });
-})();
+app.get("/", function (req, res) {
+    res.send("hello");
+});
+console.log(`Listening on port ${process.env.PORT}`);
+app.listen(process.env.PORT);
