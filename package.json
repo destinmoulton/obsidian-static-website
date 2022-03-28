@@ -27,6 +27,7 @@
         "dotenv": "^16.0.0",
         "express": "^4.17.3",
         "nunjucks": "^3.2.3",
+        "remarkable": "^2.0.1",
         "slugify": "^1.6.5"
     }
 }
