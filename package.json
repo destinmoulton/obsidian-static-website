@@ -26,6 +26,7 @@
         "directory-tree": "^3.2.2",
         "dotenv": "^16.0.0",
         "express": "^4.17.3",
-        "nunjucks": "^3.2.3"
+        "nunjucks": "^3.2.3",
+        "slugify": "^1.6.5"
     }
 }
