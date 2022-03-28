@@ -7,7 +7,9 @@ const express = require("express");
 const app = express();
 const nunjucks = require("nunjucks");
 const slugify = require("slugify");
-
+const { Remarkable } = require("remarkable");
+const md = new Remarkable();
+const stripYamlHeader = require("./lib/strip-yaml-header");
 app.use(express.static("public"));
 
 let menuHTML = "";
@@ -47,9 +49,11 @@ app.get("/*", function (req, res) {
     if (req.url !== "/") {
         const path = recursiveFindPath(tree.children, req.url);
         if (path !== null) {
-            contents = fs.readFileSync(path);
+            contents = fs.readFileSync(path, "utf8");
             // Strip yaml header
-            contents = contents.replace(/\A---(.|\n)*?---/);
+            contents = stripYamlHeader(contents);
+            // Render markdown to html
+            contents = md.render(contents);
         }
     }
     res.render("index.html", { tree: menuHTML, contents: contents });
