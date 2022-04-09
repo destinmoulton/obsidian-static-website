@@ -8,7 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
-
+    
+    <link rel="stylesheet" href="/assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/assets/highlightjs/default.min.css">
+    <link rel="stylesheet" href="/assets/highlightjs/solarized-light.css">
+    <link rel="stylesheet" href="/assets/highlightjs/highlightjs-copy.min.css">
     <link rel="stylesheet" href="/css/style.css">
 
 </head>
@@ -22,5 +26,17 @@
             {{contents|safe}}
         </article>
     </div>
+
+    <script defer src="/assets/highlightjs/highlight.min.js"></script>
+    <script defer src="/assets/highlightjs/highlightjs-copy.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.addPlugin(new CopyButtonPlugin());
+            // Run highlightjs on the code blocks
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+        });
+    </script>
 </body>
 </html>

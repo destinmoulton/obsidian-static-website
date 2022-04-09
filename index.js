@@ -65,7 +65,10 @@ function recursiveHTMLTree(children) {
     menuHTML += "<ul>";
     for (let child of children) {
         if (child.type === "directory" && child.children.length > 0) {
-            menuHTML += "<li><span>" + child.name + "</span>";
+            menuHTML +=
+                "<li><span><i class='fas fa-caret-right'></i>" +
+                child.name +
+                "</span>";
             recursiveHTMLTree(child.children);
             menuHTML += "</li>";
         } else if (child.type === "file") {
