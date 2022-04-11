@@ -28,6 +28,7 @@
         "express": "^4.17.3",
         "nunjucks": "^3.2.3",
         "remarkable": "^2.0.1",
-        "slugify": "^1.6.5"
+        "slugify": "^1.6.5",
+        "yaml-front-matter": "^4.1.1"
     }
 }

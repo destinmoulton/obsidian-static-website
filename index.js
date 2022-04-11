@@ -7,6 +7,7 @@ const express = require("express");
 const app = express();
 const nunjucks = require("nunjucks");
 const slugify = require("slugify");
+const yamlFMatter = require("yaml-front-matter");
 const { Remarkable } = require("remarkable");
 const md = new Remarkable();
 const stripYamlHeader = require("./lib/strip-yaml-header");
@@ -46,17 +47,22 @@ console.log(tree.children[0]);
 recursiveHTMLTree(tree.children);
 app.get("/*", function (req, res) {
     let contents = "";
+    let metadata = {}; // data from yaml header
     if (req.url !== "/") {
         const path = recursiveFindPath(tree.children, req.url);
         if (path !== null) {
             contents = fs.readFileSync(path, "utf8");
+            // Parse the yaml front matter/header
+            metadata = yamlFMatter.loadFront(contents);
+
             // Strip yaml header
             contents = stripYamlHeader(contents);
+
             // Render markdown to html
             contents = md.render(contents);
         }
     }
-    res.render("index.html", { tree: menuHTML, contents: contents });
+    res.render("index.html", { tree: menuHTML, contents: contents, metadata });
 });
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
