@@ -6,20 +6,31 @@
  */
 (function () {
     document.addEventListener("DOMContentLoaded", function () {
-        setupFolderListeners();
+        setupTreeFolderListeners();
     });
 
-    function setupFolderListeners() {
+    /**
+     * Setup the folder tree listeners.
+     *  - Toggle the icons on click
+     *  - Toggle visibility of the subtree
+     */
+    function setupTreeFolderListeners() {
         const folders = document.querySelectorAll(".osw-folder-title");
         for (let folder of folders) {
             folder.addEventListener("click", function (evt) {
-                const $ul = evt.currentTarget.nextElementSibling;
+                const $title = evt.currentTarget;
+                const $ul = $title.nextElementSibling;
                 const isActive = $ul.classList.contains("osw-folder-active");
-
+                const $i = $title.querySelector("i");
                 if (!isActive) {
                     $ul.classList.add("osw-folder-active");
+                    $i.classList.remove("fa-caret-right");
+                    $i.classList.add("fa-caret-down");
+                } else {
+                    $ul.classList.remove("osw-folder-active");
+                    $i.classList.add("fa-caret-right");
+                    $i.classList.remove("fa-caret-down");
                 }
-                console.log("clicked title");
             });
         }
     }
