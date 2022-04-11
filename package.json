@@ -30,6 +30,7 @@
         "gulp-sass": "^5.1.0",
         "nunjucks": "^3.2.3",
         "remarkable": "^2.0.1",
+        "sass": "^1.50.0",
         "slugify": "^1.6.5",
         "yaml-front-matter": "^4.1.1"
     }
