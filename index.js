@@ -9,22 +9,21 @@ const nunjucks = require("nunjucks");
 const slugify = require("slugify");
 const yamlFMatter = require("yaml-front-matter");
 const { Remarkable } = require("remarkable");
-const md = new Remarkable();
+const md = new Remarkable({ html: true });
 app.use(express.static("public"));
 
-let menuHTML = "";
 //app.set("views", "./public");
 nunjucks.configure(path.resolve(__dirname, "public", "views"), {
     autoescape: true,
     express: app,
 });
 
-const options = {
+const treeOptions = {
     extensions: /\.md/,
     attributes: ["type"],
     exclude: /.*\/\..*/,
 };
-const slugger = (item, path) => {
+const treeSlugger = (item, path) => {
     // Strip the file extension
     const noExtension = item.name.replace(/\.[^/.]+$/, "");
     const shortPath = item.path.replace(process.env.VAULT_PATH + "/", "");
@@ -40,14 +39,22 @@ const slugger = (item, path) => {
     item.name_without_extension = noExtension;
     item.slug = slugify(noExtension);
     item.slug_path = slugPath;
+    item.name_lower = noExtension.toLowerCase();
 };
-const tree = dirTree(process.env.VAULT_PATH, options, slugger, slugger);
-recursiveHTMLTree(tree.children);
+let menuHTML = "";
+let tree = dirTree(
+    process.env.VAULT_PATH,
+    treeOptions,
+    treeSlugger,
+    treeSlugger
+);
+tree.children = recursivelySortTree(tree.children);
+recursivelyGenerateHTMLTree(tree.children);
 app.get("/*", function (req, res) {
     let contents = "";
     let metadata = {}; // data from yaml header
     if (req.url !== "/") {
-        const path = recursiveFindPath(tree.children, req.url);
+        const path = recursivelyFindPath(tree.children, req.url);
         if (path !== null) {
             contents = fs.readFileSync(path, "utf8");
             // Parse the yaml front matter/header
@@ -62,12 +69,18 @@ app.get("/*", function (req, res) {
             delete metadata.__content;
         }
     }
-    res.render("index.html", { tree: menuHTML, contents: contents, metadata });
+    const hasMetadata = Object.keys(metadata).length > 0;
+    res.render("index.html", {
+        tree: menuHTML,
+        contents,
+        metadata,
+        hasMetadata,
+    });
 });
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
 });
-function recursiveHTMLTree(children) {
+function recursivelyGenerateHTMLTree(children) {
     menuHTML += "<ul>";
     for (let child of children) {
         if (child.type === "directory" && child.children.length > 0) {
@@ -75,7 +88,7 @@ function recursiveHTMLTree(children) {
                 "<li><span class='osw-folder-title'><i class='fas fa-caret-right'></i>" +
                 child.name +
                 "</span>";
-            recursiveHTMLTree(child.children);
+            recursivelyGenerateHTMLTree(child.children);
             menuHTML += "</li>";
         } else if (child.type === "file") {
             menuHTML +=
@@ -89,10 +102,10 @@ function recursiveHTMLTree(children) {
     menuHTML += "</ul>";
 }
 
-function recursiveFindPath(children, path_slug_needle) {
+function recursivelyFindPath(children, path_slug_needle) {
     for (let child of children) {
         if (child.type === "directory" && child.children.length > 0) {
-            const found = recursiveFindPath(child.children, path_slug_needle);
+            const found = recursivelyFindPath(child.children, path_slug_needle);
             if (found !== null) {
                 return found;
             }
@@ -103,4 +116,32 @@ function recursiveFindPath(children, path_slug_needle) {
         }
     }
     return null;
+}
+
+function recursivelySortTree(children) {
+    let folders = [];
+    let files = [];
+    for (let child of children) {
+        if (child.type === "directory" && child.children.length > 0) {
+            folders.push(child);
+            child.children = recursivelySortTree(child.children);
+        } else if (child.type === "file") {
+            files.push(child);
+        }
+    }
+    folders.sort(sortByLowerCase);
+    files.sort(sortByLowerCase);
+    return folders.concat(files);
+}
+
+/**
+ * Sort files and folders by lower case.
+ * @param {*} a
+ * @param {*} b
+ * @returns
+ */
+function sortByLowerCase(a, b) {
+    if (a.name_lower < b.name_lower) return -1;
+    if (a.name_lower > b.name_lower) return 1;
+    return 0;
 }
