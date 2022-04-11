@@ -23,6 +23,11 @@
             {{tree | safe}}
         </aside>
         <article class="osw-content">
+            <ul>
+                {% for key,item in metadata %}
+                <li>{{key}}: {{item}}</li>
+                {% endfor %}
+            </ul>
             {{contents|safe}}
         </article>
     </div>
