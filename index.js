@@ -42,7 +42,6 @@ const slugger = (item, path) => {
     item.slug_path = slugPath;
 };
 const tree = dirTree(process.env.VAULT_PATH, options, slugger, slugger);
-console.log(tree.children[0]);
 recursiveHTMLTree(tree.children);
 app.get("/*", function (req, res) {
     let contents = "";
@@ -73,7 +72,7 @@ function recursiveHTMLTree(children) {
     for (let child of children) {
         if (child.type === "directory" && child.children.length > 0) {
             menuHTML +=
-                "<li><span><i class='fas fa-caret-right'></i>" +
+                "<li><span class='osw-folder-title'><i class='fas fa-caret-right'></i>" +
                 child.name +
                 "</span>";
             recursiveHTMLTree(child.children);
