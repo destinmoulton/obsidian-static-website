@@ -10,7 +10,6 @@ const slugify = require("slugify");
 const yamlFMatter = require("yaml-front-matter");
 const { Remarkable } = require("remarkable");
 const md = new Remarkable();
-const stripYamlHeader = require("./lib/strip-yaml-header");
 app.use(express.static("public"));
 
 let menuHTML = "";
@@ -56,10 +55,12 @@ app.get("/*", function (req, res) {
             metadata = yamlFMatter.loadFront(contents);
 
             // Strip yaml header
-            contents = stripYamlHeader(contents);
+            //contents = stripYamlHeader(contents);
 
             // Render markdown to html
-            contents = md.render(contents);
+            contents = md.render(metadata.__content);
+
+            delete metadata.__content;
         }
     }
     res.render("index.html", { tree: menuHTML, contents: contents, metadata });
